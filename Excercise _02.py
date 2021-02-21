@@ -152,3 +152,5 @@ mapa.update_layout(height=600, margin={'r':0, 't':0, 'l':0, 'b':0})
 #mapa.show()
 
 print(data[["bathrooms","price"]].groupby("bathrooms").mean())
+import this
+0
