@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import folium
 import geopandas
+import plotly.express as px
 from streamlit_folium import folium_static
 from folium.plugins import MarkerCluster
 
@@ -140,3 +141,44 @@ region_price_map.choropleth(data = df,
                            legend_name='AVG PRICE')
 with c2:
     folium_static(region_price_map)
+
+# ====================================================================================
+# Distribuicao dos imoveis por categoria
+# ====================================================================================
+st.sidebar.title('Commercial Options')
+st.title('Commercial Attributes')
+
+
+# ----------Average Price per Year
+
+# filters
+min_year_built = int( data['yr_built'].min())
+max_year_built = int( data['yr_built'].max())
+
+st.sidebar.subheader('Select Max Year Built')
+f_year_built = st.sidebar.slider('Year Built', min_year_built,
+                                      max_year_built,
+                                      min_year_built)
+
+st.header('Average Price per Year Built')
+
+# data selection
+df=data.loc[data['yr_built']<f_year_built]
+df=df[['yr_built','price']].groupby('yr_built').mean().reset_index()
+
+# plot
+fig=px.line(df,x='yr_built',y='price')
+st.plotly_chart(fig,use_countainer_width=True)
+
+# ----------Average Price per Day
+data['date']=pd.to_datetime(data['date']).dt.strftime('')
+
+
+df=data[['date','price']].groupby('date').mean().reset_index()
+
+fig=px.line(df,x='date',y='price')
+st.plotly_chart(fig,use_countainer_width=True)
+
+
+
+
