@@ -214,11 +214,31 @@ st.plotly_chart(fig,use_container_width=True)
 st.sidebar.title('Attributes Options')
 st.title('House Attributes')
 
-# House per Bedrooms
-fig=px.histogram(data,x='bedrooms',nbins=19)
-st.plotly_chart(fig,use_container_width=True)
+# filters
+f_bedrooms=st.sidebar.selectbox('Max_number_bedrooms',data['bedrooms'].unique())
 
+f_bathrooms=st.sidebar.selectbox('Max_number_bathrooms',data['bedrooms'].unique())
+
+c1, c2 = st.beta_columns(2)
+
+# House per Bedrooms
+c1.header('Houses per bedrooms')
+df=data[data['bedrooms']<f_bedrooms]
+fig=px.histogram(data,x='bedrooms',nbins=19)
+c1.plotly_chart(fig,use_container_width=True)
 
 # House per Bathrooms
+c2.header('Houses per bathrooms')
+df=data[data['bathrooms']<f_bathrooms]
+fig=px.histogram(data,x='bathrooms',nbins=19)
+c2.plotly_chart(fig,use_container_width=True)
+
 # House per Floors
+fig=px.histogram(data,x='floors',nbins=19)
+st.plotly_chart(fig,use_container_width=True)
+
+print(data.head())
+
 # House per Water View
+#fig=px.histogram(data,x='waterfront',nbins=19)
+#st.plotly_chart(fig,use_container_width=True)
