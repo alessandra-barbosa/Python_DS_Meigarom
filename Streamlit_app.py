@@ -6,6 +6,8 @@ import geopandas
 import plotly.express as px
 from streamlit_folium import folium_static
 from folium.plugins import MarkerCluster
+from datetime import datetime
+
 
 st.set_page_config(layout='wide')
 @st.cache(allow_output_mutation=True)
@@ -151,14 +153,14 @@ st.title('Commercial Attributes')
 
 # ----------Average Price per Year
 
+data['date']=pd.to_datetime(data['date']).dt.strftime('%Y-%m-%d')
+
 # filters
 min_year_built = int( data['yr_built'].min())
 max_year_built = int( data['yr_built'].max())
 
 st.sidebar.subheader('Select Max Year Built')
-f_year_built = st.sidebar.slider('Year Built', min_year_built,
-                                      max_year_built,
-                                      min_year_built)
+f_year_built = st.sidebar.slider('Year Built', min_year_built,max_year_built,min_year_built)
 
 st.header('Average Price per Year Built')
 
@@ -168,17 +170,55 @@ df=df[['yr_built','price']].groupby('yr_built').mean().reset_index()
 
 # plot
 fig=px.line(df,x='yr_built',y='price')
-st.plotly_chart(fig,use_countainer_width=True)
+st.plotly_chart(fig,use_container_width=True)
 
 # ----------Average Price per Day
-data['date']=pd.to_datetime(data['date']).dt.strftime('')
 
+st.sidebar.title('Average Price per Day')
+st.sidebar.subheader('Select Max Date')
 
-df=data[['date','price']].groupby('date').mean().reset_index()
+# filters
+min_date = datetime.strptime(data['date'].min(),'%Y-%m-%d')
+max_date = datetime.strptime(data['date'].max(),'%Y-%m-%d')
+f_date = st.sidebar.slider('Date', min_date,max_date,min_date)
 
+# data selection
+data['date']=pd.to_datetime(data['date'])
+df = data.loc[data['date']<f_date]
+df = df[['date','price']].groupby('date').mean().reset_index()
+
+# plot
 fig=px.line(df,x='date',y='price')
-st.plotly_chart(fig,use_countainer_width=True)
+st.plotly_chart(fig,use_container_width=True)
+
+# ----------Histograma
+st.sidebar.title('Price Distribution')
+st.sidebar.subheader('Select Max Price')
+
+# filter
+min_price=int(data['price'].min())
+max_price=int(data['price'].max())
+avg_price=int(data['price'].mean())
+f_price = st.sidebar.slider('Price', min_price,max_price,avg_price)
+df = data.loc[data['price']<f_price]
+
+# plot
+fig=px.histogram(df,x='price',nbins=50)
+st.plotly_chart(fig,use_container_width=True)
 
 
+#===================================================
+# Distribuicao dos imoveis por categorias fisicas
+#===================================================
+
+st.sidebar.title('Attributes Options')
+st.title('House Attributes')
+
+# House per Bedrooms
+fig=px.histogram(data,x='bedrooms',nbins=19)
+st.plotly_chart(fig,use_container_width=True)
 
 
+# House per Bathrooms
+# House per Floors
+# House per Water View
