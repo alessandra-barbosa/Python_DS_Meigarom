@@ -215,30 +215,46 @@ st.sidebar.title('Attributes Options')
 st.title('House Attributes')
 
 # filters
-f_bedrooms=st.sidebar.selectbox('Max_number_bedrooms',data['bedrooms'].unique())
-
-f_bathrooms=st.sidebar.selectbox('Max_number_bathrooms',data['bedrooms'].unique())
+f_bedrooms = st.sidebar.selectbox('Max_number_bedrooms',sorted(set(data['bedrooms'].unique())))
+f_bathrooms = st.sidebar.selectbox('Max_number_bathrooms',sorted(set(data['bathrooms'].unique())))
 
 c1, c2 = st.beta_columns(2)
 
 # House per Bedrooms
 c1.header('Houses per bedrooms')
-df=data[data['bedrooms']<f_bedrooms]
-fig=px.histogram(data,x='bedrooms',nbins=19)
+df=data[data['bedrooms']<=f_bedrooms]
+fig=px.histogram(df,x='bedrooms',nbins=19)
 c1.plotly_chart(fig,use_container_width=True)
 
 # House per Bathrooms
 c2.header('Houses per bathrooms')
-df=data[data['bathrooms']<f_bathrooms]
-fig=px.histogram(data,x='bathrooms',nbins=19)
+df=data[data['bathrooms']<=f_bathrooms]
+fig=px.histogram(df,x='bathrooms',nbins=19)
 c2.plotly_chart(fig,use_container_width=True)
 
-# House per Floors
-fig=px.histogram(data,x='floors',nbins=19)
-st.plotly_chart(fig,use_container_width=True)
+# filters
+f_floors = st.sidebar.selectbox('Max_number_floors',sorted(set(data['floors'].unique())))
+f_water = st.sidebar.checkbox('Only water view')
 
-print(data.head())
+c1, c2 = st.beta_columns(2)
+
+# House per Floors
+c1.header('Houses per floors')
+df=data[data['floors']<=f_floors]
+
+#plot
+fig=px.histogram(df,x='floors',nbins=19)
+c1.plotly_chart(fig,use_container_width=True)
+
 
 # House per Water View
-#fig=px.histogram(data,x='waterfront',nbins=19)
-#st.plotly_chart(fig,use_container_width=True)
+c2.header('Houses with Water View')
+
+if f_water:
+    df=data[data['waterfront']==1]
+else:
+    df=data.copy()
+
+fig = px.histogram(df,x='waterfront',nbins=10)
+c2.plotly_chart(fig,use_container_width=True)
+
