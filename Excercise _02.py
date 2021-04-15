@@ -50,7 +50,7 @@ data['house_age'] = 'age'
 data.loc[data['date'] > pd.to_datetime('2014-01-01',format='%Y/%m/%d',errors='coerce'), 'house_age'] = 'new_house'
 data.loc[data['date'] < pd.to_datetime('2014-01-01',format='%Y/%m/%d',errors='coerce'), 'house_age'] = 'old_house'
 #print(data.dtypes)
-#print(data[['date', 'house_age']].head(15))
+print(data[['date', 'house_age']].head(20))
 
 # 2. Crie uma nova coluna chamada: "dormitory_type"
 # - Se o valor da coluna "bedrooms" for igual à 1 => 'studio'

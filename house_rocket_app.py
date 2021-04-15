@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-import plotly.express as px
+import pipplotly.express as px
 
 st.title('House Rocket Company')
 st.markdown('Welcome to House Rocket Data Analysis')
